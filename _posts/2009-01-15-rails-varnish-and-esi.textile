@@ -15,11 +15,11 @@ First thing is to get Rails to do cache control properly. By default Rails passe
 
 <pre class="terminal"><code>
 def cache_control(options = {})
-	unless Rails.env == 'development'
-		options[:type] ||= 'public'
-		options[:ttl] = 60
-		headers['Cache-Control'] = 
-			"#{options[:type]},max-age=#{options[:ttl]}"
+  unless Rails.env == 'development'
+    options[:type] ||= 'public'
+    options[:ttl] = 60
+    headers['Cache-Control'] = 
+      "#{options[:type]},max-age=#{options[:ttl]}"
 	end
 end
 </code></pre>
@@ -30,21 +30,21 @@ Next is the ESI part. Add this code to your application helper file. Call this m
 
 <pre class="terminal"><code>
 def render_esi(path)
-	if Rails.env == 'development'
-		div_id = Digest::MD5.hexdigest(path + rand.to_s)
-		out = content_tag(:div, :id => div_id) do '' end
-		out += content_tag(:script, :type => 'text/javascript') do
-			'$.ajax({ 
-				type:"GET", 
-				url:"' + path + '", 
-				dataType:"html", 
-				success:function(html) { 
-					$("#' + div_id + '").html(html)
-			}});'
-		end
-	else
-		'<esi:include src="' + path + '" />'
-	end
+  if Rails.env == 'development'
+    div_id = Digest::MD5.hexdigest(path + rand.to_s)
+    out = content_tag(:div, :id => div_id) do '' end
+    out += content_tag(:script, :type => 'text/javascript') do
+      '$.ajax({ 
+        type:"GET", 
+        url:"' + path + '", 
+        dataType:"html", 
+        success:function(html) { 
+        $("#' + div_id + '").html(html)
+      }});'
+    end
+  else
+    '<esi:include src="' + path + '" />'
+  end
 end
 </code></pre>
 
