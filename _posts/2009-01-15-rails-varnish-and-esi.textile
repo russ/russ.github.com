@@ -1,0 +1,46 @@
+---
+layout: post
+title: Rails, Varnish and ESI
+---
+
+h1. {{ page.title }}
+
+p(meta). 15 Jan 2008
+
+Being bored and wanting to hack on something, I decided to look into what it would take to get Rails, Varnish and ESI working. My biggest complaint about this process is that it works great in production but it makes local development a royal pain. You either just have to imagine the included content is there or you have to setup a local varnish server and work through the proxy. Neither sound fun.
+
+So my idea was to change the way includes are rendered in development and use the actual ESI include in production. Now this is me just hacking for an hour, so it's very basic.
+
+First thing is to get Rails to do cache control properly. By default Rails passes all cache controls as must-revalidate, thus making the client request the page no matter what happens. This means huge loads on your server. So add this to your application controller.
+
+<pre class="terminal"><code>
+def cache_control(options = {})
+	unless Rails.env == 'development'
+		options[:type] ||= 'public'
+		options[:ttl] = 60
+		headers['Cache-Control'] = "#{options[:type]},max-age=#{options[:ttl]}"
+	end
+end
+</code></pre>
+
+Now in the actions that you want cached, call this method with the desired :ttl option. Right off the bat, even without varnish, you can reduce the load on your servers. You could also add this as a global before filter if you so choose.
+
+Next is the ESI part. Add this code to your application helper file. Call this method with the include/partial you want to "hot" load.
+
+<pre class="terminal"><code>
+def render_esi(path)
+	if Rails.env == 'development'
+		div_id = Digest::MD5.hexdigest(path + rand.to_s)
+		out = content_tag(:div, :id => div_id) do '' end
+		out += content_tag(:script, :type => 'text/javascript') do
+			'$.ajax({ type:"GET", url:"' + path + '", dataType:"html", success:function(html) { $("#' + div_id + '").html(html) } });'
+		end
+	else
+		'<esi:include src="' + path + '" />'
+	end
+end
+</code></pre>
+
+When your in development mode, your page will make an AJAX call to load the content. It will look exactly the same as if it was loaded through ESI and it will go through the Rails stack so you won't get any different behaviour in production mode. If your in production mode, it will just output the ESI include tag. The rest of the config is done through the Varnish config. You could even set ttls for your ESI includes.
+
+There are improvements that can be made of course. For instance, in my testing, I set up a Includes controller that just contained several simple actions. In the real world this could get unwieldy. And of course I would rather not do this using an AJAX call, but even to this day Rails has no easy/clean way of rendering other controller views inline. Maybe that will change with Rails 3.0.
