@@ -18,9 +18,8 @@ def cache_control(options = {})
   unless Rails.env == 'development'
     options[:type] ||= 'public'
     options[:ttl] = 60
-    headers['Cache-Control'] = 
-      "#{options[:type]},max-age=#{options[:ttl]}"
-	end
+    headers['Cache-Control'] = "#{options[:type]},max-age=#{options[:ttl]}"
+  end
 end
 </code></pre>
 
