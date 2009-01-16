@@ -5,7 +5,7 @@ title: Rails, Varnish and ESI
 
 h1. {{ page.title }}
 
-p(meta). 15 Jan 2008
+p(meta). 15 Jan 2009
 
 Being bored and wanting to hack on something, I decided to look into what it would take to get Rails, Varnish and ESI working. My biggest complaint about this process is that it works great in production but it makes local development a royal pain. You either just have to imagine the included content is there or you have to setup a local varnish server and work through the proxy. Neither sound fun.
 
