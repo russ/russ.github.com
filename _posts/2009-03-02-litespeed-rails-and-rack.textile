@@ -1,0 +1,16 @@
+---
+layout: post
+title: Litespeed, Rails and Rack
+---
+
+h1. {{ page.title }}
+
+p(meta). 02 March 2009
+
+Spent some time getting edge Rails and Litespeed to play nice together. It doesn't take much, just time to figure our the right combination of settings.
+
+<script src="http://gist.github.com/73036.js"></script>
+
+Just replace your RailsRunner.rb to make new edge Rails applications to work. You can also have an app specific Rackup config file. Just put it in config.ru in the root of your app. Here is an example of one.
+
+<script src="http://gist.github.com/73040.js"></script>
