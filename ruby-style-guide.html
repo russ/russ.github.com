@@ -1,0 +1,83 @@
+---
+layout: default
+title: Ruby Style Guide
+---
+
+<div id="ruby-style-guide">
+	<h1>Ruby Style Guide</h1>
+
+  <h2>Naming Conventions</h2>
+  <p>Constants use upper case, for example</p>
+  {% highlight ruby %}
+  Math::PI
+  Curses::KEY_DOWN
+  OptionParser::REQUIRED_ARGUMENT
+  {% endhighlight %}
+
+  <p>Classes use camel case &mdash; join words of class names by capitalizing the first letter of each word. The same goes for ModuleNames as well.</p>
+  <p>Methods use underscores, as do local_variables, @instance_variables, and @@class_variables &mdash; join words with underscores (aka "snake_case")</p>
+  <p>Keep acronyms in class names capitalized. MyXMLClass, not MyXmlClass. Variables should use all lower-case.</p>
+  <p><em><strong>There is no place in Ruby where lowerCamelCase is ever used.</strong></em></p>
+
+  <h2>Whitespace</h2>
+  <p>Use two spaces for indentation. If using an editor, set it to expand tabs to two spaces.</p>
+  <p>Statements that extend past 80 characters or so should be broken up and indented on the following line.</p>
+  {% highlight ruby %}
+  a_very_long_method_name(argument1,
+                          a + b,
+                          arg 3)
+  {% endhighlight %}
+
+  <h2>Parenthesis</h2>
+  <p>Ruby allows you to leave out parenthesis, in general, resist the temptation, except in the following cases:</p>
+  <ol>
+    <li>Always leave out empty parentheses.</li>
+    <li>The parentheses can be left out of a single command that is surrounded by ERb delimiters -- the ERb markers make sure the code is still readable.</li>
+  </ol>
+
+  <h2>Block Formatting</h2>
+  <p>There are two prevailing conventions on when to use curly braces for blocks versus the do ... end keywords:
+  <ol>
+    <li>Use curly braces for one-line blocks, use do...end for multi-line blocks</li>
+    <li>Use curly braces when the return value is desired (or chained), use do...end when the side-effect is desired.</p>
+  </ol>
+  {% highlight ruby %}
+  list.map { |x| x + 3 }
+
+  list.map { |x|
+    x + 3
+  }.sort
+  {% endhighlight %}
+
+  <h2>If expressions</h2>
+  <p>Use if statements as expressions.</p>
+  {% highlight ruby %}
+  x = if boolean then 3 else 5 end
+  x = boolean ? 3 : 5
+  {% endhighlight %}
+
+  <h3>Trailing if Statements</h3>
+  <p>Only use trailing if statements in guard clauses.</p>
+  {% highlight ruby %}
+  return if x.nil?
+  {% endhighlight %}
+  <p>In general, these statements can get hard to read (people tend to overlook the if part) and should only be used if:</p>
+  <ol>
+    <li>The statement and the conditional are both simple.</li>
+    <li>The statement is a guard clause that prevents execution of the rest of the method -- this can save a level of indent and make the method easier to read.</li>
+  </ol>
+
+  <h2>Use Ruby Idioms</h2>
+  <p>There are a couple of idioms that, although they are sort of opaque the first time you see them, are commonly used enough that they should be used in place of wordier alternatives. Right now the list starts at three:</p>
+  {% highlight ruby %}
+  @user ||= User.find(params[:id])
+  @user.name &&= @user.name.downcase
+  array.map(&:upcase)
+  {% endhighlight %}
+
+  <h2>References</h2>
+  <ul class="references">
+    <li><a href="http://wiki.rubygarden.org">Ruby Garden</a></li>
+    <li><a href="http://www.pathf.com/blogs/2008/10/elements-of-ruby-style/">Pathfinder Development</a></li>
+  </ul>
+</div>
